@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+     <title>Disaster Management: SEM_ALPHA</title>
+
+     <meta charset="UTF-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+     <meta name="description" content="">
+     <meta name="keywords" content="">
+     <meta name="author" content="">
+     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+     <link rel="stylesheet" href="css/bootstrap.min.css">
+     <link rel="stylesheet" href="css/font-awesome.min.css">
+     <link rel="stylesheet" href="css/animate.css">
+     <link rel="stylesheet" href="css/owl.carousel.css">
+     <link rel="stylesheet" href="css/owl.theme.default.min.css">
+     <link rel="stylesheet" href="css/magnific-popup.css">
+
+     <!-- MAIN CSS -->
+     <link rel="stylesheet" href="css/templatemo-style.css">
+     <!-- MAP LOAD SCRIPT -->
+     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+     <script async defer
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCO4EgKkKSzZjD6fVH9ljHWtrJ1aycXbr8&callback=initMap&libraries=places">
+          </script>
+
+     <!-- MAP MIAN SCRIPT -->
+     <script>
+
+          // THIS IS THE ONE FOR FETCHING LONGITUDE AND LATITUDE 
+
+          navigator.geolocation.getCurrentPosition(function (position) {
+               var lon = position.coords.longitude;
+               var lat = position.coords.latitude;
+               // alert(lon);
+               document.getElementById("lon").value = lon;
+               document.getElementById("lat").value = lat;
+          });
+
+
+
+
+          // THIS IS THE TO DISPLAY LOCATIONS.
+          (function (exports) {
+               // "use strict";
+               function initMap() {
+
+
+
+                    // else {
+                    //     alert("Re-load and Allow Location Access.");
+                    // }
+
+                    // make the var dynamic n we are done
+
+                    //  alert(document.getElementById("lat").value);
+                    var lat = Number(document.getElementById("lat").value);
+                    var lon = Number(document.getElementById("lon").value);
+
+                    // var lon= 77.21;
+                    // var lat= 28.66;
+
+
+
+
+
+                    var sydney = new google.maps.LatLng(lat, lon);
+                    exports.infowindow = new google.maps.InfoWindow();
+                    exports.map = new google.maps.Map(document.getElementById("map"), {
+                         center: sydney,
+                         zoom: 15
+                    });
+                    var request = {
+                         location: sydney,
+                         radius: '2000',
+                         type: ['hospital']
+                    };
+                    exports.service = new google.maps.places.PlacesService(exports.map);
+                    exports.service.nearbySearch(request, function (
+                         results,
+                         status
+                    ) {
+                         if (status === google.maps.places.PlacesServiceStatus.OK) {
+                              for (var i = 0; i < results.length; i++) {
+                                   createMarker(results[i]);
+                              }
+
+                              exports.map.setCenter(results[0].geometry.location);
+                         }
+                    });
+               }
+
+               function createMarker(place) {
+                    var marker = new google.maps.Marker({
+                         map: exports.map,
+                         position: place.geometry.location
+                    });
+                    google.maps.event.addListener(marker, "click", function () {
+                         exports.infowindow.setContent(place.name);
+                         exports.infowindow.open(exports.map, this);
+                    });
+               }
+
+               exports.createMarker = createMarker;
+               exports.initMap = initMap;
+          })((this.window = this.window || {}));
+
+
+
+
+     </script>
+
+
+</head>
+
+<body>
+
+
+
+
+
+
+     <!-- Maps -->
+     <div class="section-title wow fadeInUp" data-wow-delay="0.1s" style="text-align: center; padding-top: 4%;">
+          <h2 id="mapp">Nearby Healthcare Centers</h2>
+
+     </div>
+     <div id="map" class="section-title wow fadeInUp" data-wow-delay="0.1s">
+          <input type="number" id="lat" value=0>
+          <input type="number" id="lon" value=0>
+     </div>
+
+
+</body>
+
+</html>
